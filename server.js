@@ -19,26 +19,7 @@ app.post('/test', function (req, res) {
   console.log(req.body)
 });
 
-app.get('/canvas', function (req, res) {
-  res.setHeader('Content-Type', 'image/png');
-  draw().pngStream().pipe(res);
-});
-
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
 });
-
-
-function draw() {
-  var Canvas = require('canvas'),
-      Image = Canvas.Image,
-      canvas = new Canvas(200, 200),
-      ctx = canvas.getContext('2d');
-
-  ctx.font = '30px Impact';
-  ctx.rotate(0.1);
-  ctx.fillText('Awesome!', 50, 100);
-
-  return canvas;
-}
