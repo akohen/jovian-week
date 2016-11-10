@@ -1,4 +1,5 @@
 var game = {
+  lastSave:0,
   interpreter: function(command, term) {
     const cmd = $.terminal.parse_command(command)
     switch(cmd.name) {
@@ -110,16 +111,20 @@ var game = {
   },
   options: {
     prompt: function(e) {game.setPrompt(e)},
-    greetings: "Jovian Week test",
+    greetings: function(callback) {callback("Welcome to Jovian Week " + game.player.name)},
     onBlur: function() { return false },
-    onAfterCommand: function(e) { localStorage.setItem("saved_view", JSON.stringify(e.export_view()) ) },
-    completion: ["help","balance","goto","orbit","status","scan"], //function(term,s) {console.log(term); console.log(s); term.echo("tab test")}
+    onAfterCommand: function(e) { game.save() },
+    completion: function(terminal, string, callback) { callback(["help","balance","goto","orbit","status","scan"])},
     keydown: function(e, term) { if(game.blocked) return false;},
   },
   setPrompt: function(e) {
     e('[[;green;]'+game.player.status+']@[[;#777;]'+game.player.location+']>')
   },
   loop: function() {
+    if(game.lastSave++ > 30) {
+      game.lastSave = 0
+      game.save()
+    }
     if(universe[game.player.location].run) {
       universe[game.player.location].run(game.player);
     }

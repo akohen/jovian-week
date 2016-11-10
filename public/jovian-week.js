@@ -8,7 +8,8 @@ const universe = {
 }
 
 jQuery(document).ready(function($) {
-  $('#console').terminal(game.interpreter, game.options);
-  game.player.term = $('#console').terminal(); 
-  game.loop();
+  game.load()
+  $('#console').terminal(game.interpreter, game.options)
+  game.player.term = $('#console').terminal()
+  game.loop()
 });

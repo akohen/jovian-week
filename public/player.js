@@ -1,4 +1,5 @@
 game.player = {
+  name: "jed",
   location: "europa",
   status: "orbiting",
   deltav: 100,
