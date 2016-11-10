@@ -10,16 +10,22 @@ app.use(express.static('public'));
 
 
 app.get('/', function (req, res) {
-  res.send('Hello World!');
+  res.sendFile('console.html' , { root : __dirname});
 });
 
 app.post('/test', function (req, res) {
-  res.send(JSON.stringify({ jsonrpc: '2.0', result:'pong', error:{message:'wat?'} }));
-  console.log(req.params)
+  res.setHeader('Content-Type', 'application/json');
+  
   console.log(req.body)
+  if(req.body.method == "login") {
+    console.log("login attempt")
+    res.send(JSON.stringify({ jsonrpc: '2.0', result:'logged', id:req.body.id }));
+  } else {
+    res.send(JSON.stringify({ jsonrpc: '2.0', result:'pong', error:{message:'wat?'} }));
+  }
 });
 
 
-app.listen(process.env.PORT || 3000, function () {
-  console.log('Example app listening on port 3000!');
+var listener = app.listen(process.env.PORT || 3000, function () {
+  console.log('Listening on port ' + listener.address().port);
 });

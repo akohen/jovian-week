@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Jovian Week</title>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/0.11.11/js/jquery.terminal.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/0.11.11/css/jquery.terminal.min.css" rel="stylesheet"/>
+  <script src="jovian-week.js"></script>
+  <script src="console.js"></script>
+  <script src="player.js"></script>
+  <style type="text/css">
+
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #111;
+  }
+
+  .cmd {
+    background-color: #111 !important;
+  }
+
+  .cursor {
+    color: #111 !important;
+  }
+
+  .terminal .inverted, .cmd .inverted, .cmd .cursor.blink {
+    color: #000;
+  }
+
+
+@-webkit-keyframes terminal-blink {
+  0%, 100% {
+      background-color: #111;
+      color: #aaa;
+  }
+  50% {
+      background-color: #bbb;
+      color: #111;
+  }
+}
+
+@-ms-keyframes terminal-blink {
+  0%, 100% {
+      background-color: #111;
+      color: #aaa;
+  }
+  50% {
+      background-color: #bbb;
+      color: #111;
+  }
+}
+
+@-moz-keyframes terminal-blink {
+  0%, 100% {
+      background-color: #111;
+      color: #aaa;
+  }
+  50% {
+      background-color: #bbb;
+      color: #111;
+  }
+}
+@keyframes terminal-blink {
+  0%, 100% {
+      background-color: #111;
+      color: #aaa;
+  }
+  50% {
+      background-color: #bbb; /* not #aaa because it's seems there is Google Chrome bug */
+      color: #111;
+  }
+}
+
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+   
+  ::-webkit-scrollbar-thumb {
+    background-color: #333;
+  }
+
+  /* static version
+.scanlines {
+  background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEElEQVQYV2NgAIH///9LAgAJGgMXg30YcQAAAABJRU5ErkJggg==) repeat;
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  z-index: 1;
+}*/
+
+.scanlines {
+  position: relative;
+  overflow: hidden;
+}
+.scanlines:before, .scanlines:after {
+  display: block;
+  pointer-events: none;
+  content: '';
+  position: absolute;
+}
+.scanlines:before {
+  width: 100%;
+  height: 2px;
+  z-index: 2147483649;
+  background: rgba(0, 0, 0, 0.3);
+  opacity: 0.75;
+  -webkit-animation: scanline 6s linear infinite;
+          animation: scanline 6s linear infinite;
+}
+.scanlines:after {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2147483648;
+  background: -webkit-linear-gradient(top, transparent 50%, rgba(0, 0, 0, 0.3) 51%);
+  background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.3) 51%);
+  background-size: 100% 4px;
+  -webkit-animation: scanlines 1s steps(60) infinite;
+          animation: scanlines 1s steps(60) infinite;
+}
+
+/* ANIMATE UNIQUE SCANLINE */
+@-webkit-keyframes scanline {
+  0% {
+    -webkit-transform: translate3d(0, 200000%, 0);
+            transform: translate3d(0, 200000%, 0);
+  }
+}
+@keyframes scanline {
+  0% {
+    -webkit-transform: translate3d(0, 200000%, 0);
+            transform: translate3d(0, 200000%, 0);
+  }
+}
+@-webkit-keyframes scanlines {
+  0% {
+    background-position: 0 50%;
+  }
+}
+@keyframes scanlines {
+  0% {
+    background-position: 0 50%;
+  }
+}
+  </style>
+</head>
+<body>
+<div class="scanlines">
+<div id="console" style="height: 100vh; padding: 0; background-color: #111; "></div>
+</div>
+
+</body>
+</html>
