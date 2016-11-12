@@ -177,6 +177,11 @@ var game = {
       }
     }
 
+    if(game.player.hull < 1) { // Player death
+      game.term.echo("Ship destroyed, Hull reset to 100%")
+      game.player.hull = 100
+    }
+
     setTimeout(game.loop, 500); // Next loop in 500ms
   }
 } 
