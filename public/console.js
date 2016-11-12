@@ -25,6 +25,22 @@ var game = {
         term.echo("Current balance : ¥"+game.player.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
         break;
 
+      case "transfer":
+        if(cmd.args[0] && universe[game.player.location].transfers && universe[game.player.location].transfers[cmd.args[0]]) {
+          var transfer = universe[game.player.location].transfers[cmd.args[0]]
+          term.echo("Transfer parameters :\n" + 
+            "  Duration " + transfer.duration + " or " + game.orbit.timeInSeconds(transfer.duration) + " seconds"
+            + "\n  Delta V required " + transfer.deltav + " m/s"
+            + "\n  Synodic Period " + transfer.period);
+          game.player.status = "transfering"
+          game.player.transfer = transfer
+          game.player.transfer.destination = cmd.args[0]
+          game.player.transfer.arrival = Math.floor(Date.now() / 1000)+600
+        } else {
+          term.echo("No transfer to " + cmd.args[0] + " was found from here")
+        }
+        break;
+
       case "dock":
         if(game.player.canDock()) {
           game.blocked = true;
@@ -81,9 +97,13 @@ var game = {
 
       case "status":
         term.echo("Currently " +game.player.status+" "+ game.player.location)
-        term.echo("Semi-major axis " + universe[game.player.location].sma + " 000 km")
+        term.echo("Semi-major axis " + universe[game.player.location].sma + " m")
         term.echo("Fuel level " + game.player.deltav + "%")
         term.echo("Hull integrity " + game.player.hull + "%")
+        if(game.player.status == "transfering") {
+          term.echo("Transfer to " + game.player.transfer.destination + " underway")
+          term.echo("  Time to destination : " + game.orbit.getRemainingTime(game.player.transfer.arrival))
+        }
         break;
 
       case "orbit":
@@ -113,7 +133,7 @@ var game = {
     prompt: function(e) {game.setPrompt(e)},
     greetings: function(callback) {callback("Welcome to Jovian Week " + game.player.name)},
     onBlur: function() { return false },
-    onAfterCommand: function(e) { game.save() },
+    onAfterCommand: function(e) { game.saveSystem.save() },
     completion: function(terminal, string, callback) { callback(["help","balance","goto","orbit","status","scan"])},
     keydown: function(e, term) { if(game.blocked) return false;},
   },
@@ -121,14 +141,26 @@ var game = {
     e('[[;green;]'+game.player.status+']@[[;#777;]'+game.player.location+']>')
   },
   loop: function() {
-    if(game.lastSave++ > 30) {
+    game.currentTime = Math.floor(Date.now() / 1000)
+    if(game.lastSave++ > 30) { // Autosave system
       game.lastSave = 0
-      game.save()
+      game.saveSystem.save()
     }
-    if(universe[game.player.location].run) {
+
+    if(universe[game.player.location].run) { // Run destination scripts ?
       universe[game.player.location].run(game.player);
     }
-    setTimeout(game.loop, 500);
+
+    if(game.player.transfer) { // Player transfer updates 
+      if(game.player.transfer.arrival < game.currentTime) {
+        game.player.location = game.player.transfer.destination
+        game.player.transfer = null
+        game.player.status = "orbiting"
+        game.term.set_prompt(game.setPrompt)
+      }
+    }
+
+    setTimeout(game.loop, 500); // Next loop in 500ms
   }
 } 
 
