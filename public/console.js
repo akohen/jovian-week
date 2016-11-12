@@ -4,7 +4,20 @@ var game = {
     const cmd = $.terminal.parse_command(command)
     switch(cmd.name) {
       case "help":
-        term.echo("available commands are mysql, js, test");
+        term.echo("available commands:\n"
+          +"  [[b;;]echo] <text> echo back first argument\n"
+          +"  [[b;;]echoraw] <text> echo back first argument (raw text)\n"
+          +"  [[b;;]scan] <body_id> show bodies\n"
+          +"  [[b;;]balance]\n"
+          +"  [[b;;]transfer] <body_id> plan and execute transfer between moons\n"
+          +"  [[b;;]dock]\n"
+          +"  [[b;;]undock]\n"
+          +"  [[b;;]rpc] RPC calls to server\n"
+          +"  [[b;;]test] pauses terminal\n"
+          +"  [[b;;]status]\n"
+          +"  [[b;;]orbit]\n"
+          +"  [[b;;]orbit2] clickable!\n"
+          +"  [[b;;]goto] <body_id> teleport to body");
         break;
 
       case "scan":
@@ -19,6 +32,10 @@ var game = {
 
       case "echo":
         term.echo(cmd.args[0]);
+        break;
+
+      case "echoraw":
+        term.echo(cmd.args[0],{raw:true});
         break;
 
       case "balance":
@@ -134,7 +151,7 @@ var game = {
     greetings: function(callback) {callback("Welcome to Jovian Week " + game.player.name)},
     onBlur: function() { return false },
     onAfterCommand: function(e) { game.saveSystem.save() },
-    completion: function(terminal, string, callback) { callback(["help","balance","goto","orbit","status","scan"])},
+    completion: function(terminal, string, callback) { callback(["help","balance","goto","orbit","status","scan","transfer"])},
     keydown: function(e, term) { if(game.blocked) return false;},
   },
   setPrompt: function(e) {
