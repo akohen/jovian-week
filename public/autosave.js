@@ -16,6 +16,7 @@ game.saveSystem = {
     console.log('loading')
     var saveData = JSON.parse(localStorage.getItem("save"))
     if(!saveData) { return }
+    game.epoch = Math.floor(Date.now() / 1000)
     game.player.name = saveData.name
     game.player.location = saveData.location
     game.player.status = saveData.status
