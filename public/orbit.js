@@ -2,11 +2,11 @@ game.orbit = {
   // tools to compute orbit and transfer parameters
   getGravitationalParameter: function(body) { return 6.67408e-11 * body.mass },
   getPeriod: function(body) { //get orbital period in s, sma in m, mass in kg
-    return 2 * Math.PI * Math.sqrt( Math.pow(body.sma,3) / this.getGravitationalParameter(universe[body.parent]) );
+    return 2 * Math.PI * Math.sqrt( Math.pow(body.sma,3) / this.getGravitationalParameter(body.parent) );
   },
-  getVelocity: function(body) { return Math.sqrt(this.getGravitationalParameter(universe[body.parent])/body.sma) },
+  getVelocity: function(body) { return Math.sqrt(this.getGravitationalParameter(body.parent)/body.sma) },
   // Returns the current angle between periapsis and the body's position
-  getTrueAnomaly: function(body) {
+  getMeanAnomaly: function(body) {
     let timeSinceEpoch = game.currentTime - game.epoch
     let period = this.getPeriod(body)
     let timeInLastOrbit = timeSinceEpoch % period
@@ -18,27 +18,32 @@ game.orbit = {
 
   // returns the phase angle between the origin body and the destination body
   getPhaseAngle: function(origin, destination) {
-    // might need to be changed after eccentriciy and inclination are added
-    return this.getTrueAnomaly(destination) - this.getTrueAnomaly(origin)
+    // might need to be changed after eccentricity and inclination are added
+    return this.getMeanAnomaly(destination) - this.getMeanAnomaly(origin)
   },
 
   getSynodicPeriod: function(body, body2) {
     let inv_period = 1/this.getPeriod(body) - 1/this.getPeriod(body2)
     return Math.abs(1/inv_period)
   },
+
+
+  getTransferPhaseAngle(from,to) {
+    return (1 - Math.pow((from.sma + to.sma)/(2*to.sma),1.5)) * 180
+  },
+
   // compute a hohmann transfer from the origin orbit to the destination orbit
   // 
   // Orbits must be around different bodies, but with the same parent
   getTransfer: function(from,to) {
-
     // variables used in computation
-    let origin = universe[from.parent] // origin body
-    let destination = universe[to.parent] // destination body
+    let origin = from.parent // origin body
+    let destination = to.parent // destination body
     let a_1 = from.sma // sma at origin orbit
     let a_2 = to.sma // sma at destination orbit
     let r_1 = origin.sma // sma of the origin body
     let r_2 = destination.sma // sma of the destination body
-    let mu_p = this.getGravitationalParameter(universe[origin.parent])
+    let mu_p = this.getGravitationalParameter(origin.parent)
     let mu_1 = this.getGravitationalParameter(origin)
     let mu_2 = this.getGravitationalParameter(destination)
 
@@ -61,20 +66,77 @@ game.orbit = {
 
     let eta = v_escape*v_escape/2 - mu_1/a_1
     let e = Math.sqrt( 1 + 2*eta*a_1*a_1*v_escape*v_escape/(mu_1*mu_1) )
-    let ejectionAngle = 180 - Math.acos(1/e) * (180/Math.PI)
+    let ejectionAngle = 180 - Math.acos(1/e) * (180/Math.PI) // Angle of burn to origin's prograde
 
     console.log("Transfer time : " + this.timeToString(transferTime))
     console.log("Phase angle : " + phaseAngle)
     console.log("Injection delta v : " +v_injection+ "m/s")
+    console.log("Escape velocity : " +v_escape)
     console.log("e : " + e)
     console.log("ejectionAngle : " + ejectionAngle)
     console.log("Insertion delta v : " +v_insertion)
     console.log("Total delta v : " + v_total)
 
-    return [transferTime, phaseAngle, v_escape, v_injection, ejectionAngle]
+    let sma = (r_1+r_2)/2
+    let eccentricity = (r_1 - r_2)/(r_1+r_2)
+    let low
+    if(origin.sma < destination.sma) {
+      eccentricity *= -1
+      low = origin 
+    } else {
+      low = destination
+    }
+
+    console.log(eccentricity)
+    let window = {
+      phaseAngle: phaseAngle,
+      transferTime: transferTime,
+      ejectionAngle: ejectionAngle,
+      totalDeltaV: v_total,
+      origin: origin,
+      destination: destination
+    }
+    let injection = {
+      type:"transfer",
+      sma:(r_1+r_2)/2,
+      eccentricity:eccentricity,
+      parent:origin.parent,
+      argumentOfPeriapsis:this.getMeanAnomaly(low),
+      anomalyAtEpoch:this.getMeanAnomaly(origin),
+      epoch:game.currentTime
+    }
+    let insertion = {
+      type:"orbit",
+      sma:a_2,
+      eccentricity:0,
+      parent:destination,
+      argumentOfPeriapsis:0,
+      anomalyAtEpoch:0,
+      epoch:game.currentTime+transferTime
+    }
+    return {window:window,injection:injection}
+  },
+
+
+
+  getNextWindow: function(origin, destination) {
+    // Assumption : All planets / moons orbits are circular and coplanar !
+    let phaseAngle = this.getTransferPhaseAngle(origin, destination)
+    let angularSpeed_1 = 360 / this.getPeriod(origin)
+    let angularSpeed_2 = 360 / this.getPeriod(destination)
+    let angularSpeedDifference = angularSpeed_2 - angularSpeed_1 // difference in angular speed between the two bodies
+    let currentPhaseAngle = this.getMeanAnomaly(destination) - this.getMeanAnomaly(origin)
+    let windowOpens = (this.getTransferPhaseAngle(origin, destination) - currentPhaseAngle) / angularSpeedDifference
+    if(windowOpens < 0) {
+      windowOpens += this.getSynodicPeriod(origin, destination)
+    }
+    console.log("Window for transfer opens in "+this.timeToString(windowOpens))
+    return windowOpens
+
   },
 
   // Time functions
+  // should be moved to own module
   timeInSeconds: function(string) { // convert a string like "7d12h" to a number of seconds
     var match = /^(?:(\d+)d)?(?:(\d+)h)?(?:(\d+)m)?$/.exec(string)
     var res = 0;
@@ -88,6 +150,14 @@ game.orbit = {
   },
   timeToString: function(time) { // converts a time in seconds to a nicer string
     var formattedTime = ""
+    if(time < 0) {
+      formattedTime += '-'
+      time *= -1
+    }
+    if(time >= 31536000) { 
+      formattedTime += Math.floor(time/31536000) +"y"
+      time = time % 31536000
+    }
     if(time >= 86400) { 
       formattedTime += Math.floor(time/86400) +"d"
       time = time % 86400

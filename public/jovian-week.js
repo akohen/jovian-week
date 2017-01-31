@@ -3,6 +3,9 @@
 // sma in meters
 // mass in kg
 // anomaly at epoch in degrees
+// epoch (if empty should be set to the universe's epoch)
+
+// Split bodies in two ? Orbital elements and physical properties ? (name, type, mass, radius, etc...)
 
 // Can include (to be removed ?)
 // type of object
@@ -12,10 +15,29 @@
 // To be added
 // Eccentricity
 // Inclination
-//
+// Longitude of ascending node
+// Argument of periapsis
+
 const universe = {
-  jupiter:{type:"planet",sma:0,mass:1.8986e27},
-  earth:{type:"planet",sma:0,mass:5.972e24},
+  jupiter:{type:"planet",sma:0,mass:1.8986e27,parent:"sun"},
+  earth:{type:"planet",sma:1.496e11,mass:5.9723e24,anomalyAtEpoch:129.55,parent:"sun"},
+  /* Earth Mean Orbital Elements (J2000)
+  Semimajor axis (AU)                  1.00000011  
+  Orbital eccentricity                 0.01671022   
+  Orbital inclination (deg)            0.00005  
+  Longitude of ascending node (deg)  -11.26064  
+  Longitude of perihelion (deg)      102.94719  
+  Mean Longitude (deg)               100.46435
+  */
+  mars:{type:"planet",sma:2.2792e11,mass:6.4171e23,anomalyAtEpoch:25.27,parent:"sun"},
+  /* Mars orbital elements
+  Semimajor axis (AU)                  1.52366231  
+  Orbital eccentricity                 0.09341233   
+  Orbital inclination (deg)            1.85061   
+  Longitude of ascending node (deg)   49.57854  
+  Longitude of perihelion (deg)      336.04084   
+  Mean Longitude (deg)               355.45332
+  */
   iss:{type:"station",sma:6.780e6,mass:5e5,parent:"earth"},
   sun:{type:"sun",sma:0,mass:1.989e30},
   
@@ -68,6 +90,20 @@ const universe = {
 }
 
 jQuery(document).ready(function($) {
+  for(let name in universe) {
+    let body = universe[name]
+    body.name = name
+    if(body.parent != null) {
+      let parent = universe[body.parent]
+      body.parent = parent
+      if(parent.children) {
+        parent.children[body.name] = body
+      } else {
+        parent.children = {}
+        parent.children[body.name] = body
+      }
+    }
+  }
   game.saveSystem.load()
   $('#console').terminal(game.interpreter, game.options)
   game.term = $('#console').terminal()
