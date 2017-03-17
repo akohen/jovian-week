@@ -29,9 +29,7 @@ const orbit = {
 
   // returns the eccentric anomly in gradians
   getEccentricAnomaly: function(body, t=time.current) {
-    // should go into the get mean anomaly function
-    let n = Math.sqrt( this.getGravitationalParameter(body.parent) / Math.pow(body.sma,3) )
-    let M = body.anomalyAtEpoch + n * (t - body.epoch)
+    let M = this.getMeanAnomaly(body,t)
 
     var ε = 1e-18
     var maxIter =100
@@ -57,14 +55,17 @@ const orbit = {
   },
 
 
-  getTrueAnomaly: function(body, epoch=game.epoch) {
-    return epoch
+  getTrueAnomaly: function(body, t=time.current) {
+    var E = this.getEccentricAnomaly(body,t)
+    var e = body.eccentricity
+    var v = 2 * Math.atan(Math.sqrt((1 + e) / (1 - e)) * Math.tan(E / 2))
+    return v
   },
 
   // returns the phase angle (in degrees) between the origin body and the destination body
-  getPhaseAngle: function(origin, destination) {
+  getPhaseAngle: function(origin, destination, t=time.current) {
     // might need to be changed after eccentricity and inclination are added
-    return this.getMeanAnomaly(destination) - this.getMeanAnomaly(origin)
+    return this.getTrueAnomaly(destination,t) - this.getTrueAnomaly(origin,t)
   },
 
   getSynodicPeriod: function(body, body2) {
@@ -74,6 +75,7 @@ const orbit = {
 
 
   getTransferPhaseAngle(from,to) {
+    //TODO check approximations, replace by solver for more complex orbits ?
     return (1 - Math.pow((from.sma + to.sma)/(2*to.sma),1.5)) * 180
   },
 
@@ -148,7 +150,7 @@ const orbit = {
       parent:origin.parent,
       argumentOfPeriapsis:this.getMeanAnomaly(low),
       anomalyAtEpoch:this.getMeanAnomaly(origin),
-      epoch:game.currentTime
+      epoch:time.current
     }
     let insertion = {
       type:"orbit",
@@ -157,7 +159,7 @@ const orbit = {
       parent:destination,
       argumentOfPeriapsis:0,
       anomalyAtEpoch:0,
-      epoch:game.currentTime+transferTime
+      epoch:time.current+transferTime
     }
     return {window:window,injection:injection}
   },

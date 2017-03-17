@@ -4,11 +4,11 @@ const location = require('./location.js')
 const db = require('./db.js')
 
 const system = {
-  updateDelta: 2500, // time between updates in ms
+  updateDelta: 5000, // time between updates in ms
   epoch:0,
   runAtUpdate: [],
   lastSave:0,
-  saveDelta:30000, // time between autosaves in ms
+  saveDelta:60000, // time between autosaves in ms
 
   
   save: function() {
