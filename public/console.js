@@ -123,7 +123,31 @@ var game = {
         }
         break;
 
+        
       case "orbit":
+        term.echo("<a class='orbit-download' href='#' download='test.png'><canvas class='orbit-test'>Test</canvas></a>",{raw:true})
+        let orbit = $(".orbit-test").last()
+        let context = orbit.get(0).getContext('2d')
+        context.beginPath();
+        context.arc(100, 100, 25, 0, 2 * Math.PI, false);
+        context.lineWidth = 1;
+        context.strokeStyle = '#00aa00';
+        context.stroke()
+        context.fillStyle = '#33aa33'
+        context.fillText('Jupiter', 130, 100)
+        if(game.orbitData == null) {
+          game.orbitData = []
+        }
+        game.orbitData.push(orbit.get(0).toDataURL('image/png'))
+
+        $(".orbit-download").last().click(e => {
+          var dataURL = e.target.toDataURL('image/png');
+          $(".orbit-download").last().attr('href',dataURL)
+        })
+        break;
+
+
+      case "orbit3":
         term.echo("<img src='orbit.png'>",{raw:true})
         break;
 

@@ -1,22 +1,4 @@
-// Orbit is made of the following elements
-// parent body
-// sma in meters
-// mass in kg
-// anomaly at epoch in degrees
-// epoch (if empty should be set to the universe's epoch)
 
-// Split bodies in two ? Orbital elements and physical properties ? (name, type, mass, radius, etc...)
-
-// Can include (to be removed ?)
-// type of object
-// pre-planned transfer list
-// radius at equator in m
-
-// To be added
-// Eccentricity
-// Inclination
-// Longitude of ascending node
-// Argument of periapsis
 
 const universe = {
   jupiter:{type:"planet",sma:0,mass:1.8986e27,parent:"sun"},
@@ -95,17 +77,28 @@ jQuery(document).ready(function($) {
     body.name = name
     if(body.parent != null) {
       let parent = universe[body.parent]
+      if(!parent.children) parent.children = {}
       body.parent = parent
-      if(parent.children) {
-        parent.children[body.name] = body
-      } else {
-        parent.children = {}
-        parent.children[body.name] = body
-      }
+      parent.children[body.name] = body
     }
   }
   game.saveSystem.load()
   $('#console').terminal(game.interpreter, game.options)
   game.term = $('#console').terminal()
+  game.term.focus()
   game.loop()
-});
+
+  // Keep canvas drawing after a screen resize
+  $(window).resize(e => {
+    clearTimeout(game.resizeTimer)
+    game.resizeTimer = setTimeout(function() {
+      $('.orbit-test').each( (i,element) => {
+        let img = new Image
+        img.src = game.orbitData[i]
+        $(element).get(0).getContext('2d').drawImage(img,0,0)
+      })
+    },150)
+  })
+
+
+})

@@ -1,4 +1,6 @@
-game.orbit = {
+const time = require('./time.js')
+
+const orbit = {
   // tools to compute orbit and transfer parameters
   getGravitationalParameter: function(body) { return 6.67408e-11 * body.mass },
   getPeriod: function(body) { //get orbital period in s, sma in m, mass in kg
@@ -211,3 +213,5 @@ game.orbit = {
     return formattedTime
   }
 }
+
+module.exports = orbit
