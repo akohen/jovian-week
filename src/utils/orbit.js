@@ -1,26 +1,34 @@
 const time = require('./time.js')
 
 const orbit = {
+
   // tools to compute orbit and transfer parameters
   getGravitationalParameter: function(body) { return 6.67408e-11 * body.mass },
-  getPeriod: function(body) { //get orbital period in s, sma in m, mass in kg
+
+
+  //get orbital period in s, sma in m, mass in kg
+  getPeriod: function(body) { 
     return 2 * Math.PI * Math.sqrt( Math.pow(body.sma,3) / this.getGravitationalParameter(body.parent) );
   },
-  getVelocity: function(body) { return Math.sqrt(this.getGravitationalParameter(body.parent)/body.sma) },
-  
-  // Returns the current angle in degrees between periapsis and the body's position
-  getMeanAnomaly: function(body, time=game.epoch) {
 
-    let timeSinceEpoch = game.currentTime - game.epoch
-    let period = this.getPeriod(body)
-    let timeInLastOrbit = timeSinceEpoch % period
-    let angleInLastOrbit = timeInLastOrbit / period * 360
-    let currentAnomaly = (body.anomalyAtEpoch + angleInLastOrbit) % 360
-    return currentAnomaly
+
+  getVelocity: function(body) { 
+    return Math.sqrt(this.getGravitationalParameter(body.parent)/body.sma) 
+  },
+  
+
+  // Returns the current angle in degrees between periapsis and the body's position
+  getMeanAnomaly: function(body, t=time.current) {
+    // Mean motion
+    let n = Math.sqrt( this.getGravitationalParameter(body.parent) / Math.pow(body.sma,3) )
+
+    let M = body.anomalyAtEpoch + n * (t - body.epoch)
+    return M%(2*Math.PI)
   },
 
+
   // returns the eccentric anomly in gradians
-  getEccentricAnomaly: function(body, t=game.epoch) {
+  getEccentricAnomaly: function(body, t=time.current) {
     // should go into the get mean anomaly function
     let n = Math.sqrt( this.getGravitationalParameter(body.parent) / Math.pow(body.sma,3) )
     let M = body.anomalyAtEpoch + n * (t - body.epoch)
