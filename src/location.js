@@ -13,6 +13,14 @@ const location = {
     return (distance + unit).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")
   },
 
+  // change the parent of a body
+  setParent: function(body, newParent) {
+    delete body.parent.children[body.name]
+    body.parent = newParent
+    if(!newParent.children) newParent.children = {}
+    newParent.children[body.name] = body
+  },
+
   //TODO Most celestial bodies "on rails" should probably be left alone during the save/load cycle
   //TODO Only save ships to db ?
   //TODO Only save updated bodies to db ?
@@ -36,8 +44,8 @@ const location = {
   
   save:function() {
     const tempUniverse = []
-    for(let name in this.universe) {
-      let temp = Object.assign({},this.universe[name])
+    for(let name in this.universe) { // we create temporary copies to "flatten" the graph
+      let temp = Object.assign({},this.universe[name]) // copies the orginal in a new object
       if(temp.parent) temp.parent = temp.parent.name
       if(temp.children) delete temp.children
       tempUniverse.push(temp)

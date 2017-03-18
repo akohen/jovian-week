@@ -4,6 +4,7 @@ const defaults = {
   // Physical properties
   mass:0, // mass in kg
   radius:0, // radius of surface / edge of atmosphere in m
+  color:"green", // color of the body on maps
 
   // Orbital elements
   sma:0, // Semi-major axis in meters
@@ -17,8 +18,8 @@ const defaults = {
 
 // Data to be loaded on a new save
 const solarSystem = [
-  {name:"sun", type:"sun", sma:0, mass:1.989e30},
-    {name:"jupiter", type:"planet", sma:0, mass:1.8986e27, parent:"sun"},
+  {name:"sun", type:"sun", sma:0, mass:1.989e30, color:"yellow"},
+    {name:"jupiter", type:"planet", sma:0, mass:1.8986e27, parent:"sun", color:"orange"},
       {name:"io", type:"moon",sma:4.217e8,mass:8.9319e22,anomalyAtEpoch:0.5,parent:"jupiter"},
         {name:"start",sma:1.93e6,parent:"io"},
         {name:"player", type:"ship",sma:1.93e6,mass:1e4,anomalyAtEpoch:0,parent:"io"},
@@ -27,9 +28,9 @@ const solarSystem = [
       {name:"ganymede", type:"moon",sma:1.070412e9,mass:1.4819e23,anomalyAtEpoch:0,parent:"jupiter"},
       {name:"callisto", type:"moon",sma:1.070412e9,mass:1.4819e23,anomalyAtEpoch:0,parent:"jupiter"},
         {name:"station", type:"station",sma:10,parent:"callisto"},
-    {name:"earth", type:"planet", sma:1.496e11, mass:5.9723e24, anomalyAtEpoch:129.55*Math.PI/180, parent:"sun"},
+    {name:"earth", type:"planet", sma:1.496e11, mass:5.9723e24, anomalyAtEpoch:129.55*Math.PI/180, parent:"sun", color:"blue"},
       {name:"iss", type:"station",sma:6.780e6,mass:5e5,parent:"earth"},
-    {name:"mars", type:"planet",sma:2.2792e11,mass:6.4171e23,anomalyAtEpoch:25.27*Math.PI/180,parent:"sun"},
+    {name:"mars", type:"planet",sma:2.2792e11,mass:6.4171e23,anomalyAtEpoch:25.27*Math.PI/180,parent:"sun", color:"red"},
 
 /* Earth Mean Orbital Elements (J2000)
   Semimajor axis (AU)                  1.00000011  

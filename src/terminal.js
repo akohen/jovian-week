@@ -5,7 +5,7 @@ const commands = require('./commands/')
 const options = {
   prompt: function(e) {e(`[[;green;]${player.status}]@[[;#777;]${player.location}]>`)},
   greetings: function(callback) {callback(`Welcome to Jovian Week ${player.name}`)},
-  onBlur: function() { return false },
+  onBlur: function() { return false }, // prevent terminal from losing focus
   onAfterCommand: function(e) { system.save() },
   completion: function(string, callback) { //TODO add support for arguments autocomplete
     const suggestions = []
@@ -25,7 +25,8 @@ function interpreter(command,term) {
   if( commands[cmd.name] ) {
     if( !commands[cmd.name].isAllowed || commands[cmd.name].isAllowed() ) {
       try {
-        return term.echo( commands[cmd.name].run(cmd.rest) )
+        let value = commands[cmd.name].run(cmd.rest)
+        return term.echo( value,{raw:/^<img src="([^"]+)">$/.test(value)} )  // Will set raw = true only for images
       } catch(e) {
         console.error(e)
         return term.error(e.toString())

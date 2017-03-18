@@ -1,6 +1,6 @@
 const command = {
   run: function(cmd) {
-    console.log(cmd.rest)
+    console.log(cmd)
   }
 }
 

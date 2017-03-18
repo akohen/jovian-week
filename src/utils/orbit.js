@@ -6,18 +6,18 @@ const orbit = {
   getGravitationalParameter: function(body) { return 6.67408e-11 * body.mass },
 
 
-  //get orbital period in s, sma in m, mass in kg
+  // get orbital period in s, sma in m, mass in kg
   getPeriod: function(body) { 
     return 2 * Math.PI * Math.sqrt( Math.pow(body.sma,3) / this.getGravitationalParameter(body.parent) );
   },
 
-
+  // returns the mean velocity in m/s
   getVelocity: function(body) { 
     return Math.sqrt(this.getGravitationalParameter(body.parent)/body.sma) 
   },
   
 
-  // Returns the current angle in degrees between periapsis and the body's position
+  // Returns the current angle in radians between periapsis and the body's position
   getMeanAnomaly: function(body, t=time.current) {
     // Mean motion
     let n = Math.sqrt( this.getGravitationalParameter(body.parent) / Math.pow(body.sma,3) )
@@ -27,15 +27,15 @@ const orbit = {
   },
 
 
-  // returns the eccentric anomly in gradians
+  // returns the eccentric anomly in radians
   getEccentricAnomaly: function(body, t=time.current) {
-    let M = this.getMeanAnomaly(body,t)
-
-    var ε = 1e-18
-    var maxIter =100
-    var E
-    var e = body.eccentricity
-    //var M = this.getMeanAnomaly(body,epoch)
+    let ε = 1e-18,
+      maxIter = 100,
+      E,
+      e = body.eccentricity,
+      dE = 1,
+      i = 0,
+      M = this.getMeanAnomaly(body,t)
 
     if (e < 0.8) {
       E = M;
@@ -43,8 +43,6 @@ const orbit = {
       E = Math.PI;
     }
 
-    var dE = 1,
-        i = 0;
     while (Math.abs(dE) > ε && i < maxIter) {
       dE = (M + e * Math.sin(E) - E) / (1 - e * Math.cos(E));
       E = E + dE;
@@ -68,15 +66,25 @@ const orbit = {
     return this.getTrueAnomaly(destination,t) - this.getTrueAnomaly(origin,t)
   },
 
+  // Returns the synodic period between two bodies, in seconds
   getSynodicPeriod: function(body, body2) {
     let inv_period = 1/this.getPeriod(body) - 1/this.getPeriod(body2)
     return Math.abs(1/inv_period)
   },
 
 
+  //TODO All methods to plot trajectories should be moved to a command or to the location module ?
+  // Temporary test function
+  // Try to find a transfer between two orbits, at least one of which is roughly circular (e<0.1 ?)
+  // For transfer between two highly eccentric orbits, we might start by circularizing initial orbit...
+  getApproxTransfer() {},
+
+
+
+  // returns the phase angle in degrees (!) for a transfer between two bodies around the same parent
   getTransferPhaseAngle(from,to) {
     //TODO check approximations, replace by solver for more complex orbits ?
-    return (1 - Math.pow((from.sma + to.sma)/(2*to.sma),1.5)) * 180
+    return (1 - Math.pow((from.sma + to.sma)/(2*to.sma),1.5))
   },
 
   // compute a hohmann transfer from the origin orbit to the destination orbit

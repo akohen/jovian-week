@@ -9,5 +9,5 @@ const game = { // quick access to modules
   db: require('./db/'),
 }
 
-window.jovianWeek = game
-module.exports = game
+window.jovianWeek = game // for debugging purposes
+module.exports = game // should not be needed ?
