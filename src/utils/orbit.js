@@ -72,7 +72,7 @@ const orbit = {
   },
 
   // returns the periapsis in meters (from parent center! this is not the altitude of Pe)
-  getApoapsis: function(body) {
+  getPeriapsis: function(body) {
     return body.sma*(1-body.eccentricity)
   },
 
