@@ -3,7 +3,9 @@ const system = require('./system.js')
 const commands = require('./commands/')
 
 const options = {
-  prompt: function(e) {e(`[[;green;]${player.status}]@[[;#777;]${player.location}]>`)},
+  prompt: function(e) {
+    e(`[[;green;]${player.status}]@[[;#777;]${player.ship.parent.name}]>`)
+  },
   greetings: function(callback) {callback(`Welcome to Jovian Week ${player.name}`)},
   onBlur: function() { return false }, // prevent terminal from losing focus
   onAfterCommand: function(e) { system.save() },
@@ -41,11 +43,12 @@ function interpreter(command,term) {
 const terminal = {} // Provides utils and main (instance), but only after initialization
 
 jQuery(document).ready(function($) {
-  $('#console').terminal(interpreter, options)
-  system.load()
-  system.update()
-  terminal.utils = $.terminal
-  terminal.main = $('#console').terminal()
+  system.load().then( () => {
+    system.update()
+    terminal.utils = $.terminal
+    $('#console').terminal(interpreter, options)
+    terminal.main = $('#console').terminal()
+  })
 })
 
 

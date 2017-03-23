@@ -1,5 +1,4 @@
 const player = {
-  ship:{}, // set after load ?
   name: "jed",
   status: "orbiting",
   deltav: 100,
