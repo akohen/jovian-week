@@ -28,7 +28,7 @@ const solarSystem = [
       {name:"ganymede", type:"moon",sma:1.070412e9,mass:1.4819e23,anomalyAtEpoch:0,parent:"jupiter"},
       {name:"callisto", type:"moon",sma:1.070412e9,mass:1.4819e23,anomalyAtEpoch:0,parent:"jupiter"},
         {name:"station", type:"station",sma:10,parent:"callisto"},
-    {name:"earth", type:"planet", sma:1.496e11, mass:5.9723e24, anomalyAtEpoch:129.55*Math.PI/180, parent:"sun", color:"blue"},
+    {name:"earth", type:"planet", sma:1.496e11, mass:5.9723e24, anomalyAtEpoch:129.55*Math.PI/180, parent:"sun", color:"aqua"},
       {name:"iss", type:"station",sma:6.780e6,mass:5e5,parent:"earth"},
     {name:"mars", type:"planet",sma:2.2792e11,mass:6.4171e23,anomalyAtEpoch:25.27*Math.PI/180,parent:"sun", color:"red"},
 
@@ -65,4 +65,7 @@ solarSystem.forEach(body => {
   }
 })
 
-module.exports = {solarSystem:solarSystem}
+module.exports = {
+  solarSystem:solarSystem, 
+  defaults:defaults
+}

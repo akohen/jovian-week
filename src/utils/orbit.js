@@ -66,6 +66,16 @@ const orbit = {
     return this.getTrueAnomaly(destination,t) - this.getTrueAnomaly(origin,t)
   },
 
+  // returns the apoapsis in meters (from parent center! this is not the altitude of Ap)
+  getApoapsis: function(body) {
+    return body.sma*(1+body.eccentricity)
+  },
+
+  // returns the periapsis in meters (from parent center! this is not the altitude of Pe)
+  getApoapsis: function(body) {
+    return body.sma*(1-body.eccentricity)
+  },
+
   // Returns the synodic period between two bodies, in seconds
   getSynodicPeriod: function(body, body2) {
     let inv_period = 1/this.getPeriod(body) - 1/this.getPeriod(body2)
