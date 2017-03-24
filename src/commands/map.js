@@ -33,11 +33,11 @@ function drawOrbit(ctx, body, x, y, scale) {
   ctx.beginPath()
   ctx.ellipse(centerX,centerY,b,a,-r,0,2*Math.PI,true)
   ctx.stroke()
-  ctx.fillText(body.name, x+2*r, y-r)
+  ctx.fillText(body.name, centerX+a, centerY)
 
 }
 
-
+// usage map target (default player)
 const command = {
   run: function(cmd) {
     let img = new Image()

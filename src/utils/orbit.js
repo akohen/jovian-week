@@ -11,8 +11,22 @@ const orbit = {
     return 2 * Math.PI * Math.sqrt( Math.pow(body.sma,3) / this.getGravitationalParameter(body.parent) );
   },
 
+  getDistanceFromParent: function(body, t=time.current) {
+    let f = this.getTrueAnomaly(body,t)
+    let l = body.sma * (1 - body.eccentricity**2) // Semi-latus rectum
+    let r = l / ( 1 + body.eccentricity * Math.cos(f))
+    return r
+  },
+
   // returns the mean velocity in m/s
-  getVelocity: function(body) { 
+  getVelocity: function(body, t=time.current) { 
+    let r = body.sma //TODO use real radius at t
+    
+    return Math.sqrt( this.getGravitationalParameter(body.parent)*(2/r - 1/body.sma) ) 
+  },
+
+  // returns the mean velocity in m/s
+  getMeanVelocity: function(body) { 
     return Math.sqrt(this.getGravitationalParameter(body.parent)/body.sma) 
   },
   
@@ -118,15 +132,15 @@ const orbit = {
 
     // Injection velocity
     let v_h1 = Math.sqrt( 2*mu_p*r_2 / (r_1*(r_1+r_2)) ) // speed of hohman transfer at start
-    let v_t1 = v_h1 - this.getVelocity(origin) // velocity change at departure
+    let v_t1 = v_h1 - this.getMeanVelocity(origin) // velocity change at departure
     let v_escape = Math.sqrt( v_t1*v_t1 + 2*mu_1/a_1 ) // velocity at departure escape
-    let v_injection = v_escape - this.getVelocity(from) // injection delta v
+    let v_injection = v_escape - this.getMeanVelocity(from) // injection delta v
 
     // Insertion velocity
     let v_h2 = Math.sqrt( 2*mu_p*r_1 / (r_2*(r_1+r_2)) ) // speed of hohmann transfer at target
-    let v_t2 = v_h2 - this.getVelocity(destination) // velocity change at target
+    let v_t2 = v_h2 - this.getMeanVelocity(destination) // velocity change at target
     let v_capture = Math.sqrt( v_t2*v_t2 + 2*mu_2/a_2 ) // velocity at target capture
-    let v_insertion = v_capture - this.getVelocity(to)
+    let v_insertion = v_capture - this.getMeanVelocity(to)
     let v_total = v_injection + v_insertion
 
     let eta = v_escape*v_escape/2 - mu_1/a_1
