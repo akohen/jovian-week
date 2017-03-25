@@ -3,7 +3,7 @@ const time = require('./utils/time.js')
 const defaults = {
   // Physical properties
   mass:0, // mass in kg
-  radius:0, // radius of surface / edge of atmosphere in m
+  radius:0, // radius of surface / edge of atmosphere in m. if no atmosphere, prefer mean volumetric radius
   color:"green", // color of the body on maps
 
   // Orbital elements
@@ -18,8 +18,9 @@ const defaults = {
 
 // Data to be loaded on a new save
 const solarSystem = [
-  {name:"sun", type:"sun", sma:0, mass:1.989e30, color:"yellow"},
-    {name:"jupiter", type:"planet", sma:0, mass:1.8986e27, parent:"sun", color:"orange"},
+  {name:"sun", type:"sun", sma:0, mass:1.989e30, radius:6.957e8, color:"yellow"},
+    {name:"mercury", type:"planet", sma:5.7909e10,mass:3.3011e23, radius:2.439e6, anomalyAtEpoch:0, eccentricity:0, parent:"sun", color:"red"},
+    {name:"jupiter", type:"planet", sma:778.57e9, mass:1.8986e27, radius:71.492e6, eccentricity:0.0489,parent:"sun", color:"orange"},
       {name:"io", type:"moon",sma:4.217e8,mass:8.9319e22,anomalyAtEpoch:0.5,parent:"jupiter"},
         {name:"start",sma:1.93e6,parent:"io"},
         {name:"player", type:"ship",sma:1.93e6,mass:1e4,anomalyAtEpoch:0,parent:"io"},
@@ -28,8 +29,8 @@ const solarSystem = [
       {name:"ganymede", type:"moon",sma:1.070412e9,mass:1.4819e23,anomalyAtEpoch:0,parent:"jupiter"},
       {name:"callisto", type:"moon",sma:1.070412e9,mass:1.4819e23,anomalyAtEpoch:0,parent:"jupiter"},
         {name:"station", type:"station",sma:10,parent:"callisto"},
-    {name:"earth", type:"planet", sma:1.496e11, mass:5.9723e24, anomalyAtEpoch:129.55*Math.PI/180, parent:"sun", color:"aqua"},
-      {name:"iss", type:"station",sma:6.780e6,mass:5e5,parent:"earth"},
+    {name:"earth", type:"planet", sma:1.496e11, mass:5.9723e24, anomalyAtEpoch:129.55*Math.PI/180, radius:6.371e6, eccentricity:0.0167, parent:"sun", color:"aqua"},
+      {name:"iss", type:"station",sma:6.782e6,mass:5e5,parent:"earth",eccentricity:0.0007358},
     {name:"mars", type:"planet",sma:2.2792e11,mass:6.4171e23,anomalyAtEpoch:25.27*Math.PI/180,parent:"sun", color:"red"},
 
 /* Earth Mean Orbital Elements (J2000)
