@@ -15,9 +15,7 @@
     "body-parser": "^1.15.2",
     "dexie": "^1.5.1",
     "express": "^4.14.0",
-    "morgan": "^1.7.0"
-  },
-  "devDependencies": {
+    "morgan": "^1.7.0",
     "browserify": "^14.1.0"
   }
 }
