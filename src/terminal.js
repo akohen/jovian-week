@@ -36,20 +36,19 @@ function interpreter(command,term) {
     }
   }
 
-  term.error("Command not recognized")
+  return term.error("Command not recognized")
 }
 
 
-const terminal = {} // Provides utils and main (instance), but only after initialization
-
-jQuery(document).ready(function($) {
-  system.load().then( () => {
-    system.update()
-    terminal.utils = $.terminal
+const terminal = { // Provides utils and main (instance), but only after initialization
+  utils: null,
+  main: null,
+  start: function($) {
     $('#console').terminal(interpreter, options)
-    terminal.main = $('#console').terminal()
-  })
-})
-
+    this.main = $('#console').terminal()
+    this.utils = $.terminal
+  },
+  run: function(command) { return interpreter(command, {echo:function(e) { return e }, error:function(e) { return e }} ) }, // used to test the interpreter
+}
 
 module.exports = terminal

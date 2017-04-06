@@ -9,5 +9,10 @@ const game = { // quick access to modules
   db: require('./db/'),
 }
 
+game.system.load().then( () => {
+  game.system.update()
+  game.terminal.start($)
+})
+
 window.jovianWeek = game // for debugging purposes
 module.exports = game // should not be needed ?
