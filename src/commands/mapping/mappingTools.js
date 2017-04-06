@@ -1,5 +1,4 @@
-const orbit = require('../utils/orbit.js')
-const location = require('../location.js')
+const orbit = require('../../utils/orbit.js')
 
 // Reference direction is always on top
 
@@ -21,7 +20,6 @@ function drawBody(ctx, body, x, y, scale) {
 
 // Draw an orbiting body
 // x/y center position
-//TODO r => should be changed to a scaling factor ?
 function drawOrbit(ctx, body, x, y, scale) {
   let e = body.eccentricity
   let a = body.sma * scale // semi-major axis
@@ -58,29 +56,7 @@ function drawOrbit(ctx, body, x, y, scale) {
 
 }
 
-// usage map target (default player)
-const command = {
-  run: function(cmd) {
-    console.log(cmd)
-    var target = location.universe.player
-    if(location.universe[cmd]) target = location.universe[cmd]
-
-    let img = new Image()
-    var canvas = document.createElement('canvas');
-    canvas.width = 600;
-    canvas.height = 400;
-
-    // Get the drawing context
-    var ctx = canvas.getContext('2d');
-    var scale = 100/target.sma
-    drawBody(ctx, target.parent,200,200,scale)
-    drawOrbit(ctx, target,200,200,scale)
-    return `<img src="${canvas.toDataURL('image/png')}">`
-  },
-
-  help: function() {
-    return `Return an image of the current orbit`
-  }
+module.exports = {
+  drawBody:drawBody, 
+  drawOrbit:drawOrbit
 }
-
-module.exports = command

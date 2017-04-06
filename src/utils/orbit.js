@@ -13,7 +13,7 @@ const orbit = {
 
   getDistanceFromParent: function(body, t=time.current) {
     let f = this.getTrueAnomaly(body,t)
-    let l = body.sma * (1 - body.eccentricity**2) // Semi-latus rectum
+    let l = body.sma * (1 - Math.pow(body.eccentricity,2)) // Semi-latus rectum
     let r = l / ( 1 + body.eccentricity * Math.cos(f))
     return r
   },
@@ -33,9 +33,7 @@ const orbit = {
 
   // Returns the current angle in radians between periapsis and the body's position
   getMeanAnomaly: function(body, t=time.current) {
-    // Mean motion
-    let n = Math.sqrt( this.getGravitationalParameter(body.parent) / Math.pow(body.sma,3) )
-
+    let n = this.getMeanAngularMotion(body) // Mean motion
     let M = body.anomalyAtEpoch + n * (t - body.epoch)
     return M%(2*Math.PI)
   },
@@ -88,6 +86,17 @@ const orbit = {
   // returns the periapsis in meters (from parent center! this is not the altitude of Pe)
   getPeriapsis: function(body) {
     return body.sma*(1-body.eccentricity)
+  },
+
+
+  // Get time from position to the next periapsis
+  getTimeToPeriapsis: function(body, t=time.current) {
+    let t_0 = - body.anomalyAtEpoch / this.getMeanAngularMotion(body) // time between PE position from epoch
+  },
+
+  //
+  getMeanAngularMotion: function(body) {
+    return Math.sqrt( this.getGravitationalParameter(body.parent) / Math.pow(body.sma,3) )
   },
 
   // Returns the synodic period between two bodies, in seconds
@@ -213,6 +222,23 @@ const orbit = {
     return windowOpens
 
   },
+
+
+  // shortcut functions
+  e: function(body) { return body.eccentricity },
+  a: function(body) { return body.sma },
+  i: function(body) { return body.inclination },
+  lop: function(body) { return body.longitudeOfAscendingNode + body.argumentOfPeriapsis }, // Longitude of Periapsis
+  n: function(body) { return this.getMeanAngularMotion(body) },
+  T: function(body) { return this.getPeriod(body) },
+  t0: function(body) { return body.epoch },
+  M: function(body, t=time.current) { return this.getMeanAnomaly(body,t) },
+  M0: function(body) { return body.anomalyAtEpoch },
+  E: function(body, t=time.current) { return this.getEccentricAnomaly(body,t) },
+  f: function(body, t=time.current) { return this.getTrueAnomaly(body,t) },
+
+
+
 
   // Time functions
   // should be moved to own module
