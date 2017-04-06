@@ -33,7 +33,10 @@ const system = {
 
   update: function() {
     console.log('update')
-    time.current = Math.floor(Date.now() / 1000);
+    time.current = Math.floor(Date.now() / 1000)
+
+    // Update maneuvers
+    location.update()
 
     for(let f of system.runAtUpdate) { f() } // 
 

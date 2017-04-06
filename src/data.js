@@ -33,8 +33,10 @@ const solarSystem = [
     {name:"mars", type:"planet",sma:2.2792e11,mass:6.4171e23,anomalyAtEpoch:25.27*Math.PI/180,parent:"sun", color:"red"},
 
 
-  {name:"player", type:"ship", parent:"earth", mass:1e4, 
-    sma:9.3e6, anomalyAtEpoch:1, eccentricity:0.2, argumentOfPeriapsis:1
+  { // player object
+    name:"player", type:"ship", parent:"earth", mass:1e4, 
+    sma:9.3e6, anomalyAtEpoch:1, eccentricity:0.2, argumentOfPeriapsis:1,
+    deltav:1000, maneuvers: [],
   },
 
 /* Earth Mean Orbital Elements (J2000)

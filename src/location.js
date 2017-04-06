@@ -1,7 +1,43 @@
 const player = require('./player.js')
+const time = require('./utils/time.js')
 
 const location = {
   universe:{},
+
+  update: function() { // updating the universe
+    for(let name in this.universe) {
+      this.updateBody(this.universe[name])
+    }
+  },
+
+  updateBody: function(body) { //
+    if(body.maneuvers && body.maneuvers.length > 0) {
+      if(this.doManeuver(body,body.maneuvers[0])) {
+        body.maneuvers.shift()
+        this.updateBody(body)
+      }
+    }
+  },
+
+  // Will try to make body perform the maneuver, which can be either a new orbit, or a description of a burn (TODO)
+  doManeuver: function(body, maneuver) {
+    const params = ['sma', 'anomalyAtEpoch', 'eccentricity', 'inclination', 'longitudeOfAscendingNode', 'argumentOfPeriapsis']
+
+    //TODO check if the maneuver is due
+    if(maneuver.epoch > time.current) return false;
+
+    //TODO check if the maneuver can be performed ?
+
+    //TODO change orbit
+    for(let p of params) {
+      if(maneuver[p]) body[p] = maneuver[p]
+    }
+
+    //TODO change body resources ?
+
+    return true
+  },
+
 
   // Returns a well formatted distance, input is in meters
   getFormattedDistance: function(distance) {
