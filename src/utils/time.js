@@ -1,5 +1,5 @@
 module.exports = {
-  current:42, // Current timestamp, set during update loop
+  current:Math.floor(Date.now() / 1000), // Current timestamp, set once, then updated during update loop
 
   timeInSeconds: function(string) { // convert a string like "7d12h" to a number of seconds
     var match = /^(?:(\d+)d)?(?:(\d+)h)?(?:(\d+)m)?$/.exec(string)

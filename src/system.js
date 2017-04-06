@@ -29,8 +29,11 @@ const system = {
   addToUpdate: function(f) {
     if( typeof f == "function") this.runAtUpdate.push(f)
   },
+
+
   update: function() {
     console.log('update')
+    time.current = Math.floor(Date.now() / 1000);
 
     for(let f of system.runAtUpdate) { f() } // 
 

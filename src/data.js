@@ -21,7 +21,7 @@ const solarSystem = [
   {name:"sun", type:"sun", sma:0, mass:1.989e30, radius:6.957e8, color:"yellow"},
     {name:"mercury", type:"planet", sma:5.7909e10,mass:3.3011e23, radius:2.439e6, anomalyAtEpoch:0, eccentricity:0, parent:"sun", color:"red"},
     {name:"jupiter", type:"planet", sma:778.57e9, mass:1.8986e27, radius:71.492e6, eccentricity:0.0489,parent:"sun", color:"orange"},
-      {name:"io", type:"moon",sma:4.217e8,mass:8.9319e22,anomalyAtEpoch:0.5,parent:"jupiter"},
+      {name:"io", type:"moon", sma:4.217e8, mass:8.9319e22, anomalyAtEpoch:0.5, radius:1.82e6, parent:"jupiter"},
         {name:"start",sma:1.93e6,parent:"io"},
       {name:"europa", type:"moon",sma:6.71e8,mass:4.8e22,anomalyAtEpoch:0,parent:"jupiter"},
         {name:"end",sma:1.66e6,parent:"europa"},
