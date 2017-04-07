@@ -33,6 +33,9 @@ const location = {
       if(maneuver[p]) body[p] = maneuver[p]
     }
 
+    if(maneuver.parent && this.universe[maneuver.parent]) this.setParent(body,this.universe[maneuver.parent]);
+
+
     //TODO change body resources ?
 
     return true
