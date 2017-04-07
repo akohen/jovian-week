@@ -17,4 +17,3 @@ game.system.load().then( () => {
 window.jovianWeek = game // for debugging purposes
 window.u = game.location.universe
 window.o = game.orbit
-module.exports = game // should not be needed ?

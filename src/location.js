@@ -61,7 +61,7 @@ const location = {
   //TODO Only save ships to db ?
   //TODO Only save updated bodies to db ?
   //TODO move to a load / save system
-  load:function(data) {
+  import:function(data) {
     for(let body of data) {
       if(!this.universe[body.name]) this.universe[body.name] = {}
 
@@ -78,7 +78,7 @@ const location = {
     player.ship = this.universe.player
   },
   
-  save:function() {
+  export:function() {
     const tempUniverse = []
     for(let name in this.universe) { // we create temporary copies to "flatten" the graph
       let temp = Object.assign({},this.universe[name]) // copies the orginal in a new object

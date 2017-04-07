@@ -13,13 +13,13 @@ const system = {
   
   save: function() {
     console.log('saving')
-    db.universe.bulkPut(location.save())
+    db.universe.bulkPut(location.export())
   },
 
 
   load: function() {
     return db.universe.toArray().then(data => {
-      location.load(data)
+      location.import(data)
     })
   },
 
