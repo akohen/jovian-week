@@ -1,23 +1,38 @@
 const location = require('../../location.js')
 const orbit = require('../../utils/orbit.js')
+const time = require('../../utils/time.js')
 
 // usage map target (default player)
 const command = {
   run: function(cmd) {
     const player = location.universe.player
     const maneuver = {eccentricity:0}
+    const tAp = orbit.tAp(player)
+    const tPe = orbit.tPe(player)
+
     // select point for maneuver and circularization altitude
-    if(cmd == "AP") {
-      
-    } else if(cmd == "PE") {
-
+    // We'll keep the argument of periapsis constant after maneuver, so we only need to update the mean anomaly at epoch
+    if(cmd.toUpperCase() == "AP" | (cmd == "" && tAp < tPe) ) {
+      maneuver.epoch = tAp
+      maneuver.sma = orbit.Ap(player)
+      maneuver.anomalyAtEpoch = Math.PI
+    } else if(cmd.toUpperCase() == "PE" | (cmd == "" && tAp > tPe) ) {
+      maneuver.epoch = tPe
+      maneuver.sma = orbit.Pe(player)
+      maneuver.anomalyAtEpoch = 0
     } else {
-
+      throw "Incorrect argument, expecting 'AP' 'PE' or empty "
     }
 
-    // Define new orbital elements
-
     // Push them to the player stack
+    try {
+      location.addManeuver(player,maneuver)
+      return `Successfully planned circularization maneuver in ${time.getRemainingTime(maneuver.epoch)}`
+    } catch(e) {
+      throw "Couldn't plan maneuver : " + e
+    }
+    
+
   },
 
   help: function() {

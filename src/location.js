@@ -30,7 +30,7 @@ const location = {
 
     //TODO change orbit
     for(let p of params) {
-      if(maneuver[p]) body[p] = maneuver[p]
+      if(maneuver[p] !== undefined) body[p] = maneuver[p]
     }
 
     if(maneuver.parent && this.universe[maneuver.parent]) this.setParent(body,this.universe[maneuver.parent]);
@@ -39,6 +39,12 @@ const location = {
     //TODO change body resources ?
 
     return true
+  },
+
+  addManeuver: function(body, maneuver) {
+    if(!body.maneuvers) body.maneuvers = [];
+    //TODO check if maneuver can be performed ?
+    body.maneuvers.push(maneuver)
   },
 
 

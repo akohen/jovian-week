@@ -1,6 +1,7 @@
 const commands = {
   add: require('./add.js'),
   both: require('./both.js'),
+  circularize: require('./maneuver/circularize.js'),
   count: require('./count.js'),
   echo: require('./echo.js'),
   find_window: require('./findWindow.js'),
