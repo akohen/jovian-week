@@ -11,8 +11,8 @@ const orbit = {
   n: function(body) { return this.getMeanAngularMotion(body) },
   T: function(body) { return this.getPeriod(body) },
   t0: function(body) { return body.epoch },
-  tAp: function(body, t=time.current) { return this.getTimeToNextApoapsis(body,t) },
-  tPe: function(body, t=time.current) { return this.getTimeToNextPeriapsis(body,t) },
+  tAp: function(body, t=time.current) { return this.getTimeOfNextApoapsis(body,t) },
+  tPe: function(body, t=time.current) { return this.getTimeOfNextPeriapsis(body,t) },
   M: function(body, t=time.current) { return this.getMeanAnomaly(body,t) },
   M0: function(body) { return body.anomalyAtEpoch },
   E: function(body, t=time.current) { return this.getEccentricAnomaly(body,t) },
@@ -108,18 +108,18 @@ const orbit = {
   },
 
 
-  // Get seconds from position to the next periapsis
-  getTimeToNextPeriapsis: function(body, t=time.current) {
+  // Get timestamp of the next periapsis
+  getTimeOfNextPeriapsis: function(body, t=time.current) {
     let t_Pe = this.t0(body) + ( 2*Math.PI - this.M0(body) ) / this.n(body) // t_Pe = M_Pe - M0 / n + t0 [T]
     let timeLeft = (t_Pe - t) % this.T(body)
-    return (timeLeft + this.T(body)) % this.T(body)
+    return t + (timeLeft + this.T(body)) % this.T(body)
   },
 
-  // Get seconds from position to the next apoapsis
-  getTimeToNextApoapsis: function(body, t=time.current) {
+  // Get timestamp of the next apoapsis
+  getTimeOfNextApoapsis: function(body, t=time.current) {
     let t_Ap = this.t0(body) + ( Math.PI - this.M0(body) ) / this.n(body) // t_Pe = M_Pe - M0 / n + t0 [T]
     let timeLeft = (t_Ap - t) % this.T(body)
-    return (timeLeft + this.T(body)) % this.T(body)
+    return t + (timeLeft + this.T(body)) % this.T(body)
   },
 
   //

@@ -10,7 +10,7 @@ Semi-major axis: ${location.getFormattedDistance(ship.sma)}
 Fuel level: 100%
 Hull integrity: 100%
 No transfer in progress
-Next Apoapsis in [[;red;]${time.timeToString(orbit.tAp(ship))}] - Next Periapsis in [[;red;]${time.timeToString(orbit.tPe(ship))}] - Orbital period [[;red;]${time.timeToString(orbit.T(ship))}]`
+Next Apoapsis in [[;red;]${time.getRemainingTime(orbit.tAp(ship))}] - Next Periapsis in [[;red;]${time.getRemainingTime(orbit.tPe(ship))}] - Orbital period [[;red;]${time.timeToString(orbit.T(ship))}]`
   },
 
   help: function() {

@@ -11,7 +11,7 @@ module.exports = {
   }, 
 
   getRemainingTime: function(time) { // returns the number of seconds until the specified timestamp (in seconds)
-    return this.timeToString( time - game.currentTime );
+    return this.timeToString( time - this.current );
   },
   
   timeToString: function(time) { // converts a time in seconds to a nicer string
@@ -40,5 +40,13 @@ module.exports = {
       formattedTime += Math.floor(time) +"s"
     }
     return formattedTime
-  }
+  },
+
+  timeToSimpleString: function(time) {
+    let formattedTime = this.timeToString(time)
+    formattedTime = /^-?((\d+)[a-z]){1,2}/.exec(formattedTime)
+    return formattedTime[0]
+  },
+
+
 }
