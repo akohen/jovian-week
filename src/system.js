@@ -4,7 +4,7 @@ const location = require('./location.js')
 const db = require('./db.js')
 
 const system = {
-  updateDelta: 5000, // time between updates in ms
+  updateDelta: 500, // time between updates in ms
   epoch:0,
   runAtUpdate: [],
   lastSave:0,
@@ -32,7 +32,6 @@ const system = {
 
 
   update: function() {
-    console.log('update')
     time.current = Math.floor(Date.now() / 1000)
 
     // Update maneuvers
