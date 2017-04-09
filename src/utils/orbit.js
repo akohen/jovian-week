@@ -2,6 +2,25 @@ const time = require('./time.js')
 
 const orbit = {
 
+
+  // shortcut functions
+  e: function(body) { return body.eccentricity },
+  a: function(body) { return body.sma },
+  i: function(body) { return body.inclination },
+  lop: function(body) { return body.longitudeOfAscendingNode + body.argumentOfPeriapsis }, // Longitude of Periapsis
+  n: function(body) { return this.getMeanAngularMotion(body) },
+  T: function(body) { return this.getPeriod(body) },
+  t0: function(body) { return body.epoch },
+  tAp: function(body, t=time.current) { return this.getTimeToNextApoapsis(body,t) },
+  tPe: function(body, t=time.current) { return this.getTimeToNextPeriapsis(body,t) },
+  M: function(body, t=time.current) { return this.getMeanAnomaly(body,t) },
+  M0: function(body) { return body.anomalyAtEpoch },
+  E: function(body, t=time.current) { return this.getEccentricAnomaly(body,t) },
+  f: function(body, t=time.current) { return this.getTrueAnomaly(body,t) },
+  Ap: function(body) { return this.getApoapsis(body) },
+  Pe: function(body) { return this.getPeriapsis(body) },
+
+
   // tools to compute orbit and transfer parameters
   getGravitationalParameter: function(body) { return 6.67408e-11 * body.mass },
 
@@ -89,9 +108,18 @@ const orbit = {
   },
 
 
-  // Get time from position to the next periapsis
-  getTimeToPeriapsis: function(body, t=time.current) {
-    let t_0 = - body.anomalyAtEpoch / this.getMeanAngularMotion(body) // time between PE position from epoch
+  // Get seconds from position to the next periapsis
+  getTimeToNextPeriapsis: function(body, t=time.current) {
+    let t_Pe = this.t0(body) + ( 2*Math.PI - this.M0(body) ) / this.n(body) // t_Pe = M_Pe - M0 / n + t0 [T]
+    let timeLeft = (t_Pe - t) % this.T(body)
+    return (timeLeft + this.T(body)) % this.T(body)
+  },
+
+  // Get seconds from position to the next apoapsis
+  getTimeToNextApoapsis: function(body, t=time.current) {
+    let t_Ap = this.t0(body) + ( Math.PI - this.M0(body) ) / this.n(body) // t_Pe = M_Pe - M0 / n + t0 [T]
+    let timeLeft = (t_Ap - t) % this.T(body)
+    return (timeLeft + this.T(body)) % this.T(body)
   },
 
   //
@@ -224,18 +252,7 @@ const orbit = {
   },
 
 
-  // shortcut functions
-  e: function(body) { return body.eccentricity },
-  a: function(body) { return body.sma },
-  i: function(body) { return body.inclination },
-  lop: function(body) { return body.longitudeOfAscendingNode + body.argumentOfPeriapsis }, // Longitude of Periapsis
-  n: function(body) { return this.getMeanAngularMotion(body) },
-  T: function(body) { return this.getPeriod(body) },
-  t0: function(body) { return body.epoch },
-  M: function(body, t=time.current) { return this.getMeanAnomaly(body,t) },
-  M0: function(body) { return body.anomalyAtEpoch },
-  E: function(body, t=time.current) { return this.getEccentricAnomaly(body,t) },
-  f: function(body, t=time.current) { return this.getTrueAnomaly(body,t) },
+
 
 
 
