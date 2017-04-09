@@ -7,6 +7,7 @@ const game = { // quick access to modules
   commands: require('./commands/'),
   location: require('./location.js'),
   db: require('./db/'),
+  data: require('./data.js'),
 }
 
 game.system.load().then( () => {

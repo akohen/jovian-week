@@ -74,15 +74,16 @@ const location = {
     for(let body of data) {
       if(!this.universe[body.name]) this.universe[body.name] = {}
 
+      Object.assign(this.universe[body.name], body) // adding properties
+
       if(body.parent != null) {
         if(!this.universe[body.parent]) this.universe[body.parent] = {}
         let parent = this.universe[body.parent]
-        body.parent = parent
+        this.universe[body.name].parent = parent
         if(!parent.children) parent.children = {}
         parent.children[body.name] = this.universe[body.name]
       }
 
-      Object.assign(this.universe[body.name], body) // adding properties
     }
     player.ship = this.universe.player
   },
@@ -97,6 +98,13 @@ const location = {
     }
     return tempUniverse
   },
+
+  reset: function() {
+    for(let body in this.universe) {
+      delete this.universe[body]
+    }
+  },
+
 }
 
 module.exports = location

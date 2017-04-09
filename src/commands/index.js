@@ -9,6 +9,7 @@ const commands = {
   help: require('./help.js'),
   map: require('./mapping/map.js'),
   log: require('./log.js'),
+  reset: require('./reset.js'),
   status: require('./status.js'),
 }
 
