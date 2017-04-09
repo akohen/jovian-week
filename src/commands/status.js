@@ -1,4 +1,6 @@
 const location = require('../location.js')
+const orbit = require('../utils/orbit.js')
+const time = require('../utils/time.js')
 
 const command = {
   run: function() {
@@ -7,7 +9,8 @@ const command = {
 Semi-major axis: ${location.getFormattedDistance(ship.sma)}
 Fuel level: 100%
 Hull integrity: 100%
-No transfer in progress`
+No transfer in progress
+Next Apoapsis in [[;red;]${time.timeToString(orbit.tAp(ship))}] - Next Periapsis in [[;red;]${time.timeToString(orbit.tPe(ship))}] - Orbital period [[;red;]${time.timeToString(orbit.T(ship))}]`
   },
 
   help: function() {
