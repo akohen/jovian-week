@@ -7,7 +7,8 @@
     "postinstall": "./node_modules/.bin/browserify src/game.js -o public/bundle.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "build": "./node_modules/.bin/browserify src/game.js -d -o public/bundle.js"
+    "build": "./node_modules/.bin/browserify src/game.js -d -o public/bundle.js",
+    "watch": "./node_modules/.bin/watchify src/game.js -d -o public/bundle.js"
   },
   "author": "",
   "license": "ISC",
@@ -17,5 +18,8 @@
     "express": "^4.14.0",
     "morgan": "^1.7.0",
     "browserify": "^14.1.0"
+  },
+  "devDependencies": {
+    "watchify": "^3.9.0"
   }
 }
