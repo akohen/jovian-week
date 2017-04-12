@@ -21,7 +21,7 @@ const location = {
 
   // Will try to make body perform the maneuver, which can be either a new orbit, or a description of a burn (TODO)
   doManeuver: function(body, maneuver) {
-    const params = ['sma', 'anomalyAtEpoch', 'eccentricity', 'inclination', 'longitudeOfAscendingNode', 'argumentOfPeriapsis']
+    const params = ['sma', 'anomalyAtEpoch', 'eccentricity', 'inclination', 'longitudeOfAscendingNode', 'argumentOfPeriapsis', 'epoch']
 
     //TODO check if the maneuver is due
     if(maneuver.epoch > time.current) return false;
