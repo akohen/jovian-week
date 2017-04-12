@@ -72,7 +72,12 @@ solarSystem.forEach(body => {
   }
 })
 
+function reset() {
+  solarSystem.forEach(body => { body.epoch = time.current })
+}
+
 module.exports = {
   solarSystem:solarSystem, 
-  defaults:defaults
+  defaults:defaults,
+  reset:reset
 }
