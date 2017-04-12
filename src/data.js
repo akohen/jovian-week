@@ -35,7 +35,7 @@ const solarSystem = [
 
   { // player object
     name:"player", type:"ship", parent:"earth", mass:1e4, 
-    sma:9.3e6, anomalyAtEpoch:1, eccentricity:0.2, argumentOfPeriapsis:1,
+    sma:9.3e6, anomalyAtEpoch:3.1, eccentricity:0.2, argumentOfPeriapsis:1,
     deltav:1000, maneuvers: [],
   },
 
