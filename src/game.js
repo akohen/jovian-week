@@ -19,3 +19,4 @@ window.jovianWeek = game // for debugging purposes
 window.u = game.location.universe
 window.o = game.orbit
 window.t = game.time
+window.Body = require('./utils/body.js')
