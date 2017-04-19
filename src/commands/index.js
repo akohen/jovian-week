@@ -6,6 +6,7 @@ const commands = {
   echo: require('./echo.js'),
   find_window: require('./findWindow.js'),
   forbidden: require('./forbidden.js'),
+  format_time: require('./formatTime.js'),
   help: require('./help.js'),
   map: require('./mapping/map.js'),
   log: require('./log.js'),
