@@ -22,21 +22,41 @@ const options = {
 }
 
 function interpreter(command,term) {
-  const cmd = terminal.utils.parse_command(command)
-    
-  if( commands[cmd.name] ) {
-    if( !commands[cmd.name].isAllowed || commands[cmd.name].isAllowed() ) {
+
+  function isAllowed(command) {
+    if( !commands[command] ) return false;
+    if( commands[command].isAllowed && !commands[command].isAllowed() ) return false;
+    return true;
+  }
+
+  function getArgs(command, result) {
+    if(!command) return result;
+    if(!result) return command;
+    return command + " " + result;
+  }
+
+  function isRaw(result) {
+    return /^<img src="([^"]+)">$/.test(result); // Will set raw = true only for images
+  }
+
+  const segments = command.split(' | ');
+  let result = "";
+
+  for(let i=0; i<segments.length; i++) {
+    let segment = terminal.utils.parse_command(segments[i]);
+    if (isAllowed(segment.name)) {
       try {
-        let value = commands[cmd.name].run(cmd.rest)
-        return term.echo( value,{raw:/^<img src="([^"]+)">$/.test(value)} )  // Will set raw = true only for images
+        result = commands[segment.name].run( getArgs(segment.rest, result) )
       } catch(e) {
         console.error(e)
         return term.error(e.toString())
-      }
+      }      
+    } else {
+      return term.error("Command not recognized");
     }
   }
 
-  return term.error("Command not recognized")
+  return term.echo( result,{raw:isRaw(result)} ); 
 }
 
 
