@@ -6,6 +6,8 @@ const time = require('../../utils/time.js')
 const command = {
   run: function(cmd) {
     const player = location.universe.player
+    if(player.eccentricity < 0.01) throw "Orbit is already circular";
+    if(player.maneuvers) throw "Can't plan this until the last maneuver has been executed";
     const maneuver = {eccentricity:0}
     const tAp = orbit.tAp(player)
     const tPe = orbit.tPe(player)
