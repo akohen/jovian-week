@@ -19,6 +19,8 @@ const orbit = {
   f: function(body, t=time.current) { return this.getTrueAnomaly(body,t) },
   Ap: function(body) { return this.getApoapsis(body) },
   Pe: function(body) { return this.getPeriapsis(body) },
+  r: function(body, t=time.current) { return this.getDistanceFromParent(body,t) },
+  h: function(body, t=time.current) { return this.getAltitudeFromParent(body,t) },
 
 
   // tools to compute orbit and transfer parameters
@@ -31,10 +33,13 @@ const orbit = {
   },
 
   getDistanceFromParent: function(body, t=time.current) {
-    let f = this.getTrueAnomaly(body,t)
-    let l = body.sma * (1 - Math.pow(body.eccentricity,2)) // Semi-latus rectum
-    let r = l / ( 1 + body.eccentricity * Math.cos(f))
-    return r
+    return body.sma * ( 1 - body.eccentricity * Math.cos(this.getEccentricAnomaly(body,t)) )  // r = e (1 - e cos E)
+  },
+
+  getAltitudeFromParent: function(body, t=time.current) {
+    let r = this.r(body,t)
+    let radius = (body.parent && body.parent.radius) ? body.parent.radius : 0; 
+    return (r - radius);
   },
 
   // returns the mean velocity in m/s
