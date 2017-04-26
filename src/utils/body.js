@@ -5,7 +5,8 @@ const time = require('./time.js')
 const universe = require('../location.js').universe
 
 class Body {
-  constructor(params) {
+  constructor(data) {
+    let params = Object.assign({}, data)
     if(params.parent) {
       let parent = params.parent;
       delete params.parent;

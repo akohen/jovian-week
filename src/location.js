@@ -1,5 +1,6 @@
 const time = require('./utils/time.js')
 const Body = require('./utils/body.js')
+const solarSystem = require('./data.js').solarSystem
 
 const location = {
   universe:{},
@@ -26,7 +27,7 @@ const location = {
   //TODO move to a load / save system
   import:function(data) {
     for(let body of data) {
-     this.universe[body.name] = new Body(body)
+      this.universe[body.name] = new Body(body)
     }
 
     for(let name in this.universe) {
@@ -46,15 +47,10 @@ const location = {
   },
 
   reset: function() {
-    console.log("reset")
     for(let body in this.universe) {
       delete this.universe[body]
     }
-
-    this.import(require('./data.js').solarSystem);
-    console.log(this.universe.player.parent.name)
-    console.log("reset done")
-
+    this.import(solarSystem)
   },
 
 }
