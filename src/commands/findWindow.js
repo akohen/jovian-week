@@ -1,5 +1,4 @@
 const universe = require('../location.js').universe
-const orbit = require('../utils/orbit.js')
 
 const command = {
   run: function(cmd) {
@@ -9,7 +8,7 @@ const command = {
 
     console.log(target)
     console.log(universe.player)
-    let next = orbit.getNextWindow(universe.player.parent, target)
+    //let next = orbit.getNextWindow(universe.player.parent, target)
 
     return 12
   },

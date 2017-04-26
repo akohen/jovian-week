@@ -42,8 +42,8 @@ class Body {
   get M0() { return this.anomalyAtEpoch }
   get E() { return this.getEccentricAnomaly() }
   get f() { return this.getTrueAnomaly() }
-  get Ap() { return getApoapsis() }
-  get Pe() { return getPeriapsis() }
+  get Ap() { return this.getApoapsis() }
+  get Pe() { return this.getPeriapsis() }
   get r() { return this.a * ( 1 - this.e * Math.cos(this.E) ) }
   get h() { return this.r - this.parent.radius }
   get hAp() { return this.Ap - this.parent.radius }
@@ -105,8 +105,8 @@ class Body {
 
 
   // Distance and altitude functions
-  getApoapsis() { return this.a * (1 - this.e) }
-  getPeriapsis() { return this.a * (1 + this.e) }
+  getApoapsis() { return this.a * (1 + this.e) }
+  getPeriapsis() { return this.a * (1 - this.e) }
 
 
   // Velocity functions
@@ -158,7 +158,7 @@ class Body {
   }
 
   isNextManeuverDue() {
-    if(this.maneuvers.length == 0) return false
+    if(!this.maneuvers || this.maneuvers.length == 0) return false
     if(this.maneuvers[0].epoch > this.time) return false;
     return true
   }
@@ -166,7 +166,7 @@ class Body {
   doNextManeuver(modifyOthers = true) {
     let maneuver = this.maneuvers[0]
     if(maneuver) {
-      this.maneuvers.slice();
+      this.maneuvers.shift();
       return this.doManeuver(maneuver, modifyOthers);
     }
     else return false;
@@ -188,7 +188,7 @@ class Body {
 
   addManeuver(maneuver) {
     if(!this.maneuvers) this.maneuvers = [];
-    if( maneuver.epoch > this.maneuvers.peek().epoch ) this.maneuvers.push(maneuver);
+    if(this.maneuvers.length == 0 || maneuver.epoch > this.maneuvers[this.maneuvers.length].epoch ) this.maneuvers.push(maneuver);
   }
 
   update() {

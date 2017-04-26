@@ -19,6 +19,7 @@ const system = {
 
   load: function() {
     return db.universe.toArray().then(data => {
+      console.log(data)
       location.import(data)
     })
   },

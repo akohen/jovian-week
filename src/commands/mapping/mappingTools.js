@@ -1,5 +1,3 @@
-const orbit = require('../../utils/orbit.js')
-
 // Reference direction is always on top
 
 function drawBody(ctx, body, x, y, scale) {
@@ -25,7 +23,7 @@ function drawOrbit(ctx, body, x, y, scale) {
   let a = body.sma * scale // semi-major axis
   let b = a*Math.sqrt(1-e*e) //semi-minor axis
   let r = body.argumentOfPeriapsis
-  let E = orbit.getEccentricAnomaly(body)
+  let E = body.E
 
 
   let centerX = x + scale * body.sma * body.eccentricity * Math.sin(r)

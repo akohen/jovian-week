@@ -1,13 +1,14 @@
-const player = {
-  name: "jed",
-  status: "orbiting",
-  deltav: 100,
-  balance: 156456000,
-  hull: 100,
-  takeDamage: function(damage) { this.hull -= 10; game.term.echo('[[;red;]Took '+damage+' damage!]')},
-  canDock: function() { return (universe[game.player.location].type == "station")},
-  dock: function() {},
-  undock: function() {},
+const universe = require('./location.js').universe
+
+class Player {
+  get name() { return "jed" }
+  get status() { return "orbiting" }
+  get deltav() { return 100 }
+  get ship() { return universe.player }
+  get balance() { return 100 }
+  get hull() { return 100 }
 }
+
+const player = new Player()
 
 module.exports = player
