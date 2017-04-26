@@ -56,7 +56,7 @@ class Body {
   // Set updateParent to false to leave parent bodies unchanged (to simulate but not apply a parent change for example)
   setParent(parent, updateParent = true) { 
     if(updateParent) {
-      if(this.parent) this.parent.removeChild(this);
+      if(this.parent && this.parent.removeChild) this.parent.removeChild(this);
       parent.addChild(this)
     }
     this.parent = parent
