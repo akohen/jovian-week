@@ -72,6 +72,34 @@ class Body {
     if(this.children[child.name]) delete this.children[child.name]
   }
 
+  // Returns the list of parent bodies, from the root to the current body
+  getParents() {
+    let current = this;
+    let parents = []
+    while(current != null) {
+      parents.unshift(current);
+      current = current.parent;
+    }
+    return parents
+  }
+
+  // returns the lowest common ancestor of two bodies
+  // LCA(earth,iss) => earth
+  // can return null if bodies do not belong to the same tree
+  getLCA(body) {
+    let otherParents = body.getParents()
+    let thisParents = this.getParents()
+    let next = thisParents.shift()
+    let ancestor = null
+    while(next == otherParents.shift()) {
+      ancestor = next
+      next = thisParents.shift()
+    }
+    return ancestor
+  }
+
+
+
   // Anomaly functions
   getMeanAnomaly(t=this.time) {
     let M = this.M0 + this.n * (t - this.t0)
@@ -121,6 +149,46 @@ class Body {
   }
 
 
+
+
+  // Position
+  // Returns an x,y position relative to the parent
+  // Y is positive towards reference direction
+  // X = reference direction - 90°
+  getRelativePosition() {
+    let x = - this.r * Math.sin( this.lop + this.f )
+    let y = this.r * Math.cos( this.lop + this.f )
+
+    return [x,y]
+  }
+
+  getPositionFrom(body) {
+    let position = [0,0]
+    let current = this;
+    while(current != body) {
+      if(!current) return undefined; // body is not a parent, so we can't determine the position
+      let distanceToParent = current.getRelativePosition();
+      position[0] += distanceToParent[0]
+      position[1] += distanceToParent[1]
+      current = current.parent
+    }
+    return position;
+    // position of moon to sun = moon%earth + earth%sun
+  }
+
+  // Returns the distance in meters between two bodies that belong to the same tree (they have a parent in common)
+  getDistanceFrom(body) {
+    let LCA = this.getLCA(body)
+    if(!LCA) return undefined;
+    let thisPosition = this.getPositionFrom(LCA)
+    let otherPosition = body.getPositionFrom(LCA)
+    let relativePosition = [otherPosition[0] - thisPosition[0], otherPosition[1] - thisPosition[1]]
+    let distance = Math.sqrt( Math.pow(relativePosition[0],2) + Math.pow(relativePosition[1],2) )
+    return distance
+  }
+
+
+
   // Time functions
   getPeriod() {
     return 2 * Math.PI * Math.sqrt( Math.pow(this.a,3)/this.parent.µ );
@@ -135,6 +203,7 @@ class Body {
     let inversePeriod = 1/this.T - 1/body.T
     return Math.abs(1/inversePeriod)
   }
+
 
 
   // Maneuver functions
