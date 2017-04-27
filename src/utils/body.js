@@ -5,8 +5,8 @@ const time = require('./time.js')
 const universe = require('../location.js').universe
 
 class Body {
-  constructor(data) {
-    let params = Object.assign({}, data)
+  constructor(args) {
+    let params = Object.assign({}, args)
     if(params.parent) {
       let parent = params.parent;
       delete params.parent;
@@ -15,6 +15,7 @@ class Body {
     Object.assign(this,data.defaults,{epoch:time.current},params)
     if(this.parent && this.parent.addChild) this.parent.addChild(this);
     this.children = {};
+    this.maneuvers = [];
   }
 
   /*
@@ -137,20 +138,32 @@ class Body {
 
 
   // Maneuver functions
+  getCopy(t=this.time) {
+    let copy = new Body() // setting prototype
+    copy = Object.assign(copy,this); // setting attributes
+    if(!copy.original) copy.original = this; // setting link to original value
+    // copying maneuvers
+    copy.maneuvers = []
+    for(let maneuver of this.maneuvers) {
+      copy.maneuvers.push(maneuver)
+    }
+    copy.time = t; // setting time
+    return copy;
+  }
+
   // this returns a temporary copy !
   getStateAt(t=this.time) { // Returns the body with the maneuvers applied at t, cannot go back in time
-    let copy = Object.assign({},this);
+    let copy = this.getCopy(t)
     while(copy.maneuvers.length > 0 && copy.maneuvers[0].epoch < t) {
       copy.doNextManeuver(false)
     }
-    copy.time = t;
     return copy
   }
 
   // get state once all the remaining maneuvers have been executed
   // this returns a temporary copy !
   getFinalState() { 
-    let copy = Object.assign({},this);
+    let copy = this.getCopy(t)
     while(copy.maneuvers.length > 0) {
       copy.doNextManeuver(false)
     }
@@ -188,8 +201,9 @@ class Body {
   }
 
   addManeuver(maneuver) {
-    if(!this.maneuvers) this.maneuvers = [];
-    if(this.maneuvers.length == 0 || maneuver.epoch > this.maneuvers[this.maneuvers.length].epoch ) this.maneuvers.push(maneuver);
+    let original = (this.original) ? this.original : this;
+    if(!original.maneuvers) original.maneuvers = [];
+    if(original.maneuvers.length == 0 || maneuver.epoch > original.maneuvers[original.maneuvers.length-1].epoch ) original.maneuvers.push(maneuver);
   }
 
   update() {

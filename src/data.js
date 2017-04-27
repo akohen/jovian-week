@@ -13,7 +13,7 @@ const defaults = {
   inclination:0, // In radians
   longitudeOfAscendingNode:0, // in radians (angle from Vernal point to ascending node)
   argumentOfPeriapsis:0, // in degrees
-  epoch:time.current, // timestamp (in seconds)
+  //epoch:time.current, // timestamp (in seconds)
 }
 
 // Data to be loaded on a new save
@@ -35,8 +35,8 @@ const solarSystem = [
 
   { // player object
     name:"player", type:"ship", parent:"earth", mass:1e4, 
-    sma:9.3e6, anomalyAtEpoch:3.1, eccentricity:0.2, argumentOfPeriapsis:1,
-    deltav:1000, maneuvers: [],
+    sma:9.3e6, anomalyAtEpoch:3.12, eccentricity:0.2, argumentOfPeriapsis:1,
+    deltav:1000,
   },
 
 /* Earth Mean Orbital Elements (J2000)
