@@ -25,7 +25,7 @@ class Body {
   body.a / body.e etc... get values at the current time
   to get values at a later time : futureBody = body.getStateAt(t1)
   futureBody.param will return param value at t1
-  to adjust to a specifid time, set body.time ( use body.time += x to add x seconds from current position)
+  to adjust to a specific time, set body.time ( use body.time += x to add x seconds from current position)
   */
 
   get e() { return this.eccentricity }
@@ -37,7 +37,7 @@ class Body {
   get t0() { return this.epoch }
   get tAp() { return this.getTimeAtNextMeanAnomaly(Math.PI) }
   get tPe() { return this.getTimeAtNextMeanAnomaly(2*Math.PI) }
-  get time() { return (this.tRef) ? this.tRef : time.current } // time at which to compute all values
+  get time() { return (typeof this.tRef !== 'undefined') ? this.tRef : time.current } // time at which to compute all values
   set time(t) { this.tRef = t } // override current time as reference time for computations
   resetTime() { delete this.tRef }
   get M() { return this.getMeanAnomaly() }
@@ -282,7 +282,29 @@ class Body {
   }
 
 
+  // Conversion between kelplerian elements and cartesian coordinates
+  // Useful for applying maneuvers
+  toCartesian() {
+    // All this is done assuming i = 0 and Ω = 0
 
+    // Get state vectors in the body inertial frame
+    let x = this.r * Math.cos(this.f)
+    let y = this.r * Math.sin(this.f)
+    let vel = this.n * this.a / ( Math.sqrt(1-Math.pow(this.e,2)) )
+    let dx = - vel * Math.sin(this.f)
+    let dy = vel * ( this.e + Math.cos(this.f) )
+
+    // Rotate reference frame by ω to get to q-frame
+    //TODO
+
+    return [x,y,0,dx,dy,0]
+  }
+
+  fromCartesian() {
+    // Assuming i = 0 and Ω = 0, we need to update : a,e,ω,M
+    //TODO
+
+  }
 
 
   // tools
