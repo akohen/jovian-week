@@ -1,11 +1,15 @@
 const db = require('../db.js')
 const location = require('../location.js')
+const system = require('../system.js')
 
 const command = {
-  run: function(cmd) {
-    location.reset();
+  run: function() {
+    db.universe.clear().then(() => {
+      location.reset()
+      system.save()
+    })
 
-    return cmd
+    return `Game reset`
   },
 
   help: function() {
