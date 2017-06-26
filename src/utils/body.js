@@ -300,9 +300,14 @@ class Body {
     return [x,y,0,dx,dy,0]
   }
 
-  fromCartesian() {
+  fromCartesian(position,velocity) {
     // Assuming i = 0 and Ω = 0, we need to update : a,e,ω,M
     //TODO
+    let r = Math.sqrt( position.x * position.x + position.y * position.y )
+    let v = Math.sqrt( velocity.x * velocity.x + velocity.y * velocity.y )
+    let E = v*v/2 - this.µ/r // specific energy
+    let a = - this.µ / (2 * E)
+    let e = Math.sqrt()
 
   }
 
