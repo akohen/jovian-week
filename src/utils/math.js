@@ -1,6 +1,6 @@
 module.exports = {
   // Rounds `n` to `precision` significant places
-  roundSf:function(n,precision) {
+  round:function(n,precision) {
     shift = precision - Math.floor(Math.log10(n)) - 1
     return Number(Math.round(n+'e'+shift)+'e'+(-shift));
   },
@@ -23,6 +23,20 @@ module.exports = {
       dot += A[i] * B[i]
     }
     return dot
+  },
+
+  // rotates vector A by angle (in degrees) along z axis
+  rotate: function(A,angle) {
+    let rotationMatrix = [
+        [Math.cos(angle), -Math.sin(angle), 0],
+        [Math.sin(angle), Math.cos(angle), 0],
+        [0, 0, 1]
+    ]
+    return A
+  },
+
+  multiply: function(A,B) {
+      return A
   },
 
 }

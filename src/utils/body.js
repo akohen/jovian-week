@@ -131,7 +131,11 @@ class Body {
   }
 
   getTrueAnomaly(t=this.time) {
-    return 2 * Math.atan( Math.sqrt( (1+this.e)/(1-this.e) ) * Math.tan(this.getEccentricAnomaly(t)/2) )
+    return this.getTrueAnomalyFromMeanAnomaly(this.getEccentricAnomaly(t))
+  }
+
+  getTrueAnomalyFromMeanAnomaly(M) {
+    return 2 * Math.atan( Math.sqrt( (1+this.e)/(1-this.e) ) * Math.tan(M/2) )
   }
 
 
@@ -307,12 +311,21 @@ class Body {
     let r = math.length(position)
     let v = math.length(velocity)
     let h = math.cross(position,velocity)
-    let h_z = h[2]
 
     let a = this.parent.µ * r / ( 2 * this.parent.µ - r * v*v )
-    let e = Math.sqrt(1 - h_z * h_z / (a * this.parent.µ) )
+    let e = Math.sqrt(1 - h[2] * h[2] / (a * this.parent.µ) )
     let argumentOfLatitude = Math.atan2(position[1],position[0])
-    return [h_z,a,e,argumentOfLatitude]
+
+    let E1 = (a - r) / (a * e)
+    let radialVelocity = math.dot(position,velocity) / r
+    let E2 = r*radialVelocity / (e * Math.sqrt(this.parent.µ *a))
+
+    let p = a*(1-e*e)
+    let f = Math.atan2(Math.sqrt(p/this.parent.µ)*math.dot(velocity,position),p-r)
+    let E = Math.atan2(Math.sqrt(1-e*e)*Math.sin(f),e+Math.cos(f))
+    let M = E - e * Math.sin(E)
+
+    return [math.round(a,7),math.round(e,7),argumentOfLatitude,E1,E2,Math.acos(E1),Math.asin(E2),f,E,M]
   }
 
 
