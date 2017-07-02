@@ -3,6 +3,7 @@
 const data = require('../data.js')
 const time = require('./time.js')
 const universe = require('../location.js').universe
+const math = require('./math.js')
 
 class Body {
   constructor(args) {
@@ -283,7 +284,7 @@ class Body {
 
 
   // Conversion between kelplerian elements and cartesian coordinates
-  // Useful for applying maneuvers
+  // Useful for applying maneuvers and reference changes
   toCartesian() {
     // All this is done assuming i = 0 and Ω = 0
 
@@ -297,18 +298,21 @@ class Body {
     // Rotate reference frame by ω to get to q-frame
     //TODO
 
-    return [x,y,0,dx,dy,0]
+    return [[x,y,0],[dx,dy,0]]
   }
 
   fromCartesian(position,velocity) {
     // Assuming i = 0 and Ω = 0, we need to update : a,e,ω,M
     //TODO
-    let r = Math.sqrt( position.x * position.x + position.y * position.y )
-    let v = Math.sqrt( velocity.x * velocity.x + velocity.y * velocity.y )
-    let E = v*v/2 - this.µ/r // specific energy
-    let a = - this.µ / (2 * E)
-    let e = Math.sqrt()
+    let r = math.length(position)
+    let v = math.length(velocity)
+    let h = math.cross(position,velocity)
+    let h_z = h[2]
 
+    let a = this.parent.µ * r / ( 2 * this.parent.µ - r * v*v )
+    let e = Math.sqrt(1 - h_z * h_z / (a * this.parent.µ) )
+    let argumentOfLatitude = Math.atan2(position[1],position[0])
+    return [h_z,a,e,argumentOfLatitude]
   }
 
 
