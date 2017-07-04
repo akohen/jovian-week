@@ -302,7 +302,12 @@ class Body {
     // Rotate reference frame by ω to get to q-frame
     //TODO
 
-    return [[x,y,0],[dx,dy,0]]
+    let position = math.transpose([x,y,0])
+    let velocity = math.transpose([dx,dy,0])
+    position = math.multiply(math.Rz(-this.argumentOfPeriapsis),position)
+    velocity = math.multiply(math.Rz(-this.argumentOfPeriapsis),velocity)
+
+    return [position,velocity]
   }
 
   fromCartesian(position,velocity) {
@@ -314,7 +319,7 @@ class Body {
 
     let a = this.parent.µ * r / ( 2 * this.parent.µ - r * v*v )
     let e = Math.sqrt(1 - h[2] * h[2] / (a * this.parent.µ) )
-    let argumentOfLatitude = Math.atan2(position[1],position[0])
+    let argumentOfLatitude = Math.atan2(position[1][0],position[0][0])
 
     let E1 = (a - r) / (a * e)
     let radialVelocity = math.dot(position,velocity) / r
@@ -325,7 +330,9 @@ class Body {
     let E = Math.atan2(Math.sqrt(1-e*e)*Math.sin(f),e+Math.cos(f))
     let M = E - e * Math.sin(E)
 
-    return [math.round(a,7),math.round(e,7),argumentOfLatitude,E1,E2,Math.acos(E1),Math.asin(E2),f,E,M]
+    let argumentOfPeriapsis = argumentOfLatitude - f
+
+    return [a,e,argumentOfLatitude,f,E,M,argumentOfPeriapsis]
   }
 
 

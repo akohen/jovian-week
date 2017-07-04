@@ -26,13 +26,13 @@ module.exports = {
   },
 
   // rotates vector A by angle (in degrees) along z axis
-  rotate: function(A,angle) {
+  Rz: function(angle) {
     let rotationMatrix = [
       [Math.cos(angle), -Math.sin(angle), 0],
       [Math.sin(angle), Math.cos(angle), 0],
       [0, 0, 1]
     ]
-    return A
+    return rotationMatrix
   },
 
   ensureMatrix: function(A) {
