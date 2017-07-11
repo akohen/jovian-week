@@ -2,6 +2,9 @@ module.exports = {
   // Rounds `n` to `precision` significant places
   round:function(n,precision) {
     shift = precision - Math.floor(Math.log10(n)) - 1
+    n = n * Math.pow(10,shift)
+    n = Math.round(n) * Math.pow(10,-shift) 
+    return Number(Math.round(n)+'e'+(-shift))
     return Number(Math.round(n+'e'+shift)+'e'+(-shift));
   },
 

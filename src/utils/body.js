@@ -292,27 +292,29 @@ class Body {
   toCartesian() {
     // All this is done assuming i = 0 and Ω = 0
 
-    // Get state vectors in the body inertial frame
+    // Get state vectors in the q-frame (x towards periapsis)
     let x = this.r * Math.cos(this.f)
     let y = this.r * Math.sin(this.f)
     let vel = this.n * this.a / ( Math.sqrt(1-Math.pow(this.e,2)) )
     let dx = - vel * Math.sin(this.f)
     let dy = vel * ( this.e + Math.cos(this.f) )
 
-    // Rotate reference frame by ω to get to q-frame
-    //TODO
-
+    // Rotate reference frame by -ω to get from the q-frame to the inertial frame
     let position = math.transpose([x,y,0])
     let velocity = math.transpose([dx,dy,0])
-    position = math.multiply(math.Rz(-this.argumentOfPeriapsis),position)
-    velocity = math.multiply(math.Rz(-this.argumentOfPeriapsis),velocity)
+    position = math.multiply(math.Rz(this.argumentOfPeriapsis),position)
+    velocity = math.multiply(math.Rz(this.argumentOfPeriapsis),velocity)
 
     return [position,velocity]
   }
 
-  fromCartesian(position,velocity) {
+  // Return orbital parameters from a state vector
+  fromCartesian(stateVector) {
+
+    let position = stateVector[0]
+    let velocity = stateVector[1]
+
     // Assuming i = 0 and Ω = 0, we need to update : a,e,ω,M
-    //TODO
     let r = math.length(position)
     let v = math.length(velocity)
     let h = math.cross(position,velocity)
@@ -332,7 +334,7 @@ class Body {
 
     let argumentOfPeriapsis = argumentOfLatitude - f
 
-    return [a,e,argumentOfLatitude,f,E,M,argumentOfPeriapsis]
+    return {a:a,e:e,argumentOfLatitude:argumentOfLatitude,f:f,E:E,M:M,argumentOfPeriapsis:argumentOfPeriapsis,epoch:time.current}
   }
 
 
